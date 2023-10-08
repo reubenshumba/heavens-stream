@@ -95,8 +95,10 @@ public class UserService {
             log.info("Authorities are found {}", authorities);
         }
 
+        MyUser save = userRequestRepository.save(userRequest);
+        log.info("user created {}", save);
 
-        MyUserDto myUserDto = MyUserDto.fromMyUser(userRequestRepository.save(userRequest));
+        MyUserDto myUserDto = MyUserDto.fromMyUser(save);
         log.info("create a session for {}", myUserDto);
 
         //Get token
