@@ -62,7 +62,7 @@ public class UserService {
         return Response.successfulResponse("Successful", myUserDto);
     }
 
-    @Transactional
+    //@Transactional
     public Response<AuthenticationResponse> saveUserRequest(MyUser userRequest) {
         log.info("received this request {}", userRequest);
         Optional<MyUser> checkIfUserExist = userRequestRepository.findFirstByUsernameIgnoreCaseOrEmailIgnoreCaseAndActiveTrue(userRequest.getUsername(), userRequest.getEmail());
@@ -82,7 +82,7 @@ public class UserService {
             }else {
 
                 log.info("no default  role found, create one ");
-                Authority authority =AuthorityHelper.createDefaultUserRole(authorityRepository);
+                Authority authority = AuthorityHelper.createDefaultUserRole(authorityRepository);
                 log.info("no default  role found, Admin,super admin, and user role has been being created : {}",authority);
                 userRequest.setAuthorities(List.of(authority));
             }
