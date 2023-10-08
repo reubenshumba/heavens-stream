@@ -12,7 +12,8 @@ import java.util.Optional;
 @Transactional
 @Repository
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
-    // You can add custom queries here if needed
+
+    List<Authority> findAllByIdIn(List<Long> ids);
     Optional<Authority> findAllByMyUsers(MyUser users);
     Optional<Authority> findFirstByRoleNameOrAuthorityCodeAndActiveTrue(String roleName, String Code);
 

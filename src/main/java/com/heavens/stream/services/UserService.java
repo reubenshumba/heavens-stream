@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -86,7 +87,15 @@ public class UserService {
                 userRequest.setAuthorities(List.of(authority));
             }
 
+        }else{
+            log.info("user has authorities therefore validate");
+            List<Long> collect = userRequest.getAuthorities().stream().map(Authority::getId).collect(Collectors.toList());
+            List<Authority> authorities = authorityRepository.findAllByIdIn(collect);
+            userRequest.setAuthorities(authorities);
+            log.info("Authorities are found {}", authorities);
         }
+
+
         MyUserDto myUserDto = MyUserDto.fromMyUser(userRequestRepository.save(userRequest));
         log.info("create a session for {}", myUserDto);
 
