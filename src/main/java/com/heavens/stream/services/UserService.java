@@ -88,10 +88,10 @@ public class UserService {
 
         }
         MyUserDto myUserDto = MyUserDto.fromMyUser(userRequestRepository.save(userRequest));
-        log.info("create a session");
+        log.info("create a session for {}", myUserDto);
 
         //Get token
-        MyUserDetails myUserDetails = myUserDetailService.loadUserByUsername(userRequest.getUsername());
+        MyUserDetails myUserDetails = myUserDetailService.loadUserByUsername(myUserDto.getUsername());
         String token = JwtUtil.generateToken(myUserDetails);
         log.info("Session token created {}", token );
         //Login new user
