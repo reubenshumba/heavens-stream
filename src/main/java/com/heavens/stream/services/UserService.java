@@ -63,31 +63,41 @@ public class UserService {
 
     @Transactional
     public Response<AuthenticationResponse> saveUserRequest(MyUser userRequest) {
+        log.info("received this request {}", userRequest);
         Optional<MyUser> checkIfUserExist = userRequestRepository.findFirstByUsernameIgnoreCaseOrEmailIgnoreCaseAndActiveTrue(userRequest.getUsername(), userRequest.getEmail());
         if(checkIfUserExist.isPresent()){
             return Response.failedResponse(HttpStatus.CONFLICT.value(), "User with provided details already exist");
         }
+        log.info("about to encrypt password  ");
         userRequest.setPassword(bCryptPasswordEncoder.encode(userRequest.getPassword()));
         if(userRequest.getAuthorities().isEmpty()){
+            log.info("no authorities where passed , try to find a default role User ");
             Optional<Authority> role_user = authorityRepository.findFirstByRoleNameOrAuthorityCodeAndActiveTrue("ROLE_USER", "14029049");
 
             if(role_user.isPresent()){
+                log.info("default role found ");
                 userRequest.setAuthorities(List.of(role_user.get()));
                 //return Response.failedResponse(HttpStatus.NOT_FOUND.value(), "Could not assign role");
             }else {
+
+                log.info("no default  role found, create one ");
                 Authority authority =AuthorityHelper.createDefaultUserRole(authorityRepository);
+                log.info("no default  role found, Admin,super admin, and user role has been being created : {}",authority);
                 userRequest.setAuthorities(List.of(authority));
             }
 
         }
         MyUserDto myUserDto = MyUserDto.fromMyUser(userRequestRepository.save(userRequest));
+        log.info("create a session");
+
         //Get token
         MyUserDetails myUserDetails = myUserDetailService.loadUserByUsername(userRequest.getUsername());
-        var token = JwtUtil.generateToken(myUserDetails);
+        String token = JwtUtil.generateToken(myUserDetails);
+        log.info("Session token created {}", token );
         //Login new user
         AuthenticationResponse authenticationResponse = new AuthenticationResponse(token, myUserDto);
         UserHelper.loginUser(request,myUserDetails);
-
+        log.info("Session created {}", authenticationResponse );
         return Response.successfulResponse("Successful", authenticationResponse);
     }
 
