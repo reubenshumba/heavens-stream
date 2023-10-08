@@ -62,7 +62,7 @@ public class UserService {
         return Response.successfulResponse("Successful", myUserDto);
     }
 
-    //@Transactional
+    @Transactional
     public Response<AuthenticationResponse> saveUserRequest(MyUser userRequest) {
         log.info("received this request {}", userRequest);
         Optional<MyUser> checkIfUserExist = userRequestRepository.findFirstByUsernameIgnoreCaseOrEmailIgnoreCaseAndActiveTrue(userRequest.getUsername(), userRequest.getEmail());
