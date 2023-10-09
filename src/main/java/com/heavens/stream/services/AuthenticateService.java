@@ -1,8 +1,11 @@
 package com.heavens.stream.services;
 
 import com.heavens.stream.configuration.jwtUtil.JwtUtil;
+import com.heavens.stream.dtos.HeavenDto;
 import com.heavens.stream.dtos.MyUserDto;
+import com.heavens.stream.models.Heaven;
 import com.heavens.stream.models.MyUserDetails;
+import com.heavens.stream.repositories.HeavenRepository;
 import com.heavens.stream.request.AuthRequest;
 import com.heavens.stream.response.AuthenticationResponse;
 import lombok.Data;
@@ -12,6 +15,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -19,6 +24,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticateService {
     private final MyUserDetailService myUserDetailService;
     private final AuthenticationManager authenticationManager;
+    private final HeavenRepository heavenRepository;
 
     public AuthenticationResponse generateToken(AuthRequest authRequest){
 
@@ -29,6 +35,9 @@ public class AuthenticateService {
         // Create an MyUserDto object
         MyUserDto myUserDto = new MyUserDto();
         // Set the properties of the MyUserDto object based on the MyUserDetails object
+        List<Heaven> heavens = heavenRepository.findAllByHeavenOwn(myUserDetails.getMyUser().getId());
+        List<HeavenDto> dto = HeavenDto.toDTO(heavens);
+        myUserDto.setHeavensOwned(dto);
         myUserDto.setId(myUserDetails.getMyUser().getId());
         myUserDto.setUsername(myUserDetails.getUsername());
         myUserDto.setEmail(myUserDetails.getMyUser().getEmail());

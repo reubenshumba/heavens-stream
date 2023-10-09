@@ -1,13 +1,16 @@
 package com.heavens.stream.services;
 
 import com.heavens.stream.configuration.jwtUtil.JwtUtil;
+import com.heavens.stream.dtos.HeavenDto;
 import com.heavens.stream.dtos.MyUserDto;
 import com.heavens.stream.helpers.AuthorityHelper;
 import com.heavens.stream.helpers.UserHelper;
 import com.heavens.stream.models.Authority;
+import com.heavens.stream.models.Heaven;
 import com.heavens.stream.models.MyUser;
 import com.heavens.stream.models.MyUserDetails;
 import com.heavens.stream.repositories.AuthorityRepository;
+import com.heavens.stream.repositories.HeavenRepository;
 import com.heavens.stream.repositories.MyUserRepository;
 import com.heavens.stream.response.AuthenticationResponse;
 import com.heavens.stream.response.Response;
@@ -43,6 +46,8 @@ public class UserService {
     private final MyUserDetailService myUserDetailService;
 
     private final HttpServletRequest request;
+
+    private final HeavenRepository heavenRepository;
 
 
     public Response<Page<MyUserDto>> getAllUserRequests(int pageSize, int page) {
@@ -105,6 +110,10 @@ public class UserService {
         MyUserDetails myUserDetails = myUserDetailService.loadUserByUsername(myUserDto.getUsername());
         String token = JwtUtil.generateToken(myUserDetails);
         log.info("Session token created {}", token );
+        //
+        List<Heaven> heavens = heavenRepository.findAllByHeavenOwn(myUserDetails.getMyUser().getId());
+        List<HeavenDto> dto = HeavenDto.toDTO(heavens);
+        myUserDto.setHeavensOwned(dto);
         //Login new user
         AuthenticationResponse authenticationResponse = new AuthenticationResponse(token, myUserDto);
         UserHelper.loginUser(request,myUserDetails);

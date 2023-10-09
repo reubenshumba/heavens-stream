@@ -92,13 +92,6 @@
 			<version>2.4.4</version> <!-- Use the latest version available -->
 		</dependency>
 
-		<dependency>
-			<groupId>jakarta.servlet</groupId>
-			<artifactId>jakarta.servlet-api</artifactId>
-			<version>5.0.0-M2</version>
-		</dependency>
-		<!-- Thanks for using https://jar-download.com -->
-
 
 	</dependencies>
 

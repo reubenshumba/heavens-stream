@@ -16,6 +16,7 @@ import java.util.Optional;
 @Transactional
 public interface HeavenRepository extends JpaRepository<Heaven, Long> {
 
+    List<Heaven> findAllByHeavenOwn(Long heavenOwn);
     Page<Heaven> findAllByActiveTrue(Pageable pageable);
     Page<Heaven> findDistinctByAuthoritiesInOrHeavenOwnAndActiveTrue(List<Authority> authorities,Long heavenOwn, Pageable pageable);
     Optional<Heaven> findFirstByHeavenNameOrStringId(String heavenName, String stringId);
