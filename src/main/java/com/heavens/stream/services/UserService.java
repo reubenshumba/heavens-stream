@@ -42,7 +42,7 @@ public class UserService {
 
     private final MyUserDetailService myUserDetailService;
 
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
 
     public Response<Page<MyUserDto>> getAllUserRequests(int pageSize, int page) {
