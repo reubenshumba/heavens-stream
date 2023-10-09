@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class UserHelper {
     public static void loginUser(HttpServletRequest request,MyUserDetails myUserDetails){
+        log.info("request ===> {}", request);
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(MyUserDto.fromMyUser(myUserDetails.getMyUser()), null, myUserDetails.getAuthorities());
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
